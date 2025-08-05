@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/ba64c6af49aa4f639902fd8133245386/artifacts
+deleted_time: 1754318927552
+end_time: 1753974922409
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: deleted
+run_id: ba64c6af49aa4f639902fd8133245386
+run_name: RandomForest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753974917497
+status: 3
+tags: []
+user_id: bhavi

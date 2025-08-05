@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/e73655a57aa849e4852e48cce60c5e5b/artifacts
+deleted_time: 1754318927552
+end_time: 1753974917433
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: deleted
+run_id: e73655a57aa849e4852e48cce60c5e5b
+run_name: LogisticRegression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1753974912356
+status: 3
+tags: []
+user_id: bhavi

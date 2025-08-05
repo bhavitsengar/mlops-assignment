@@ -1,0 +1,28 @@
+# Core dependencies
+pandas
+numpy
+scikit-learn
+
+# Experiment tracking
+mlflow
+
+# API framework
+fastapi
+uvicorn[standard]
+
+# Input validation
+pydantic
+
+# Logging & database
+sqlite-utils
+
+# Linting & Testing (for CI/CD)
+flake8
+pytest
+
+# DVC (optional but recommended for data versioning)
+dvc
+
+joblib
+
+prometheus_client  # For exposing metrics to Prometheus
