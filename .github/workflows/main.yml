@@ -66,7 +66,7 @@ jobs:
 
       - name: Run container on EC2 instance
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_AND_HOST }} << 'EOF'
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
             # Pull latest image
