@@ -23,7 +23,7 @@ app = FastAPI()
 
 
 # Load saved model from local directory
-MODEL_PATH = os.path.join(os.path.dirname(__file__), 
+MODEL_PATH = os.path.join(os.path.dirname(__file__),
                           "..", "models", "LogisticRegression_model")
 model = mlflow.sklearn.load_model(MODEL_PATH)
 
