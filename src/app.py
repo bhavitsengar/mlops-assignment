@@ -9,13 +9,13 @@ import datetime
 # Input validation schema using Pydantic
 class IrisInput(BaseModel):
     sepal_length: float = Field(..., gt=0, lt=10,
-        description="Sepal length in cm")
+                                description="Sepal length in cm")
     sepal_width: float = Field(..., gt=0, lt=10,
-        description="Sepal width in cm")
+                               description="Sepal width in cm")
     petal_length: float = Field(..., gt=0, lt=10,
-        description="Petal length in cm")
+                                description="Petal length in cm")
     petal_width: float = Field(..., gt=0, lt=10,
-        description="Petal width in cm")
+                               description="Petal width in cm")
 
 
 app = FastAPI()
