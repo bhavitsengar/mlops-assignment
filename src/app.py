@@ -4,6 +4,7 @@ import mlflow.sklearn
 import numpy as np
 import sqlite3
 import datetime
+import os
 
 
 # Input validation schema using Pydantic
@@ -22,7 +23,8 @@ app = FastAPI()
 
 
 # Load saved model from local directory
-model = mlflow.sklearn.load_model("/app/models/LogisticRegression_model")
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "models", "LogisticRegression_model")
+model = mlflow.sklearn.load_model(MODEL_PATH)
 
 
 @app.post("/predict")
