@@ -26,3 +26,7 @@ dvc
 joblib
 
 prometheus_client  # For exposing metrics to Prometheus
+
+pytest
+# HTTP client for making requests
+httpx
