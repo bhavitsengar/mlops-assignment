@@ -5,12 +5,18 @@ import numpy as np
 import sqlite3
 import datetime
 
+
 # Input validation schema using Pydantic
 class IrisInput(BaseModel):
-    sepal_length: float = Field(..., gt=0, lt=10, description="Sepal length in cm")
-    sepal_width: float = Field(..., gt=0, lt=10, description="Sepal width in cm")
-    petal_length: float = Field(..., gt=0, lt=10, description="Petal length in cm")
-    petal_width: float = Field(..., gt=0, lt=10, description="Petal width in cm")
+    sepal_length: float = Field(..., gt=0, lt=10,
+                                 description="Sepal length in cm")
+    sepal_width: float = Field(..., gt=0, lt=10, 
+                               description="Sepal width in cm")
+    petal_length: float = Field(..., gt=0, lt=10, 
+                                description="Petal length in cm")
+    petal_width: float = Field(..., gt=0, lt=10, 
+                               description="Petal width in cm")
+
 
 app = FastAPI()
 
@@ -25,6 +31,8 @@ def predict(data: IrisInput):
         data.petal_length,
         data.petal_width
     ]])
+
+    
     pred = int(model.predict(input_array)[0])
 
     # Set up SQLite logging
@@ -38,7 +46,7 @@ def predict(data: IrisInput):
         )
     """)
     conn.commit()
-    
+
     # Logging
     log_entry = (str(datetime.datetime.now()), str(data.dict()), str(pred))
     c.execute("INSERT INTO logs VALUES (?, ?, ?)", log_entry)
