@@ -9,19 +9,21 @@ import datetime
 # Input validation schema using Pydantic
 class IrisInput(BaseModel):
     sepal_length: float = Field(..., gt=0, lt=10,
-                                 description="Sepal length in cm")
-    sepal_width: float = Field(..., gt=0, lt=10, 
-                               description="Sepal width in cm")
-    petal_length: float = Field(..., gt=0, lt=10, 
-                                description="Petal length in cm")
-    petal_width: float = Field(..., gt=0, lt=10, 
-                               description="Petal width in cm")
+        description="Sepal length in cm")
+    sepal_width: float = Field(..., gt=0, lt=10,
+        description="Sepal width in cm")
+    petal_length: float = Field(..., gt=0, lt=10,
+        description="Petal length in cm")
+    petal_width: float = Field(..., gt=0, lt=10,
+        description="Petal width in cm")
 
 
 app = FastAPI()
 
+
 # Load saved model from local directory
 model = mlflow.sklearn.load_model("/app/models/LogisticRegression_model")
+
 
 @app.post("/predict")
 def predict(data: IrisInput):
@@ -32,7 +34,6 @@ def predict(data: IrisInput):
         data.petal_width
     ]])
 
-    
     pred = int(model.predict(input_array)[0])
 
     # Set up SQLite logging
