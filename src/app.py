@@ -1,11 +1,12 @@
 from fastapi import FastAPI
+from fastapi.responses import Response
 from pydantic import BaseModel, Field
 import mlflow.sklearn
 import numpy as np
 import sqlite3
 import datetime
 import os
-
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 
 # Input validation schema using Pydantic
 class IrisInput(BaseModel):
@@ -22,14 +23,28 @@ class IrisInput(BaseModel):
 app = FastAPI()
 
 
+# --------------------------
+# Prometheus metrics setup
+# --------------------------
+REQUEST_COUNT = Counter("predict_requests_total",
+                        "Total number of prediction requests")
+PREDICTION_TIME = Histogram("prediction_duration_seconds",
+                            "Time spent on predictions")
+
+
 # Load saved model from local directory
 MODEL_PATH = os.path.join(os.path.dirname(__file__),
                           "..", "models", "LogisticRegression_model")
 model = mlflow.sklearn.load_model(MODEL_PATH)
 
-
+# --------------------------
+# Prediction endpoint
+# --------------------------
 @app.post("/predict")
+@PREDICTION_TIME.time()
 def predict(data: IrisInput):
+    REQUEST_COUNT.inc()
+
     input_array = np.array([[  # input must be 2D
         data.sepal_length,
         data.sepal_width,
@@ -57,3 +72,11 @@ def predict(data: IrisInput):
     conn.commit()
 
     return {"prediction": pred}
+
+
+# --------------------------
+# /metrics endpoint
+# --------------------------
+@app.get("/metrics")
+def metrics():
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
