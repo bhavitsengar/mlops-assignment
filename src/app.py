@@ -6,7 +6,9 @@ import numpy as np
 import sqlite3
 import datetime
 import os
-from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import Counter, Histogram
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+
 
 # Input validation schema using Pydantic
 class IrisInput(BaseModel):
@@ -36,6 +38,7 @@ PREDICTION_TIME = Histogram("prediction_duration_seconds",
 MODEL_PATH = os.path.join(os.path.dirname(__file__),
                           "..", "models", "LogisticRegression_model")
 model = mlflow.sklearn.load_model(MODEL_PATH)
+
 
 # --------------------------
 # Prediction endpoint
