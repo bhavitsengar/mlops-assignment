@@ -73,6 +73,13 @@ if not SKIP_MODEL_LOAD:
     # pick the highest version number
     latest_version = max(int(v.version) for v in versions)
     model = mlflow.sklearn.load_model(f"models:/{MODEL_NAME}/{latest_version}")
+else:
+    # If skipping model load, use a dummy model for testing
+    class DummyModel:
+        def predict(self, X):
+            return [1] * len(X)
+
+    model = DummyModel()
 
 
 # --------------------------
