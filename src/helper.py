@@ -2,7 +2,8 @@ import re
 import pandas as pd
 
 # Canonical schema we will use everywhere in code & on disk
-CANONICAL_COLUMNS = ["sepal_length", "sepal_width", "petal_length", "petal_width", "target"]
+CANONICAL_COLUMNS = ["sepal_length", "sepal_width", "petal_length",
+                     "petal_width", "target"]
 
 # Map known legacy names -> canonical names
 LEGACY_TO_CANONICAL = {
@@ -17,6 +18,7 @@ LEGACY_TO_CANONICAL = {
     "petal width": "petal_width",
 }
 
+
 def normalize_df(df: pd.DataFrame) -> pd.DataFrame:
     """
     Convert any incoming/old Iris column names to canonical snake_case,
@@ -26,11 +28,13 @@ def normalize_df(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     df.columns = [c.strip().lower() for c in df.columns]
 
-    # strip units like ' (cm)' generically (before mapping), keep 'target' as is
+    # strip units like ' (cm)' generically (before mapping),
+    # keep 'target' as is
     def strip_units(name: str) -> str:
         if name == "target":
             return name
-        return re.sub(r"\s*\(.*?\)\s*$", "", name)  # remove trailing " (cm)" etc.
+        # remove trailing " (cm)" etc.
+        return re.sub(r"\s*\(.*?\)\s*$", "", name)
 
     stripped = {c: strip_units(c) for c in df.columns}
     df.rename(columns=stripped, inplace=True)
@@ -43,7 +47,8 @@ def normalize_df(df: pd.DataFrame) -> pd.DataFrame:
     # keep only known columns & coerce types
     for col in CANONICAL_COLUMNS:
         if col not in df.columns:
-            # Create missing column as NaN to avoid KeyError; will be handled by imputer or dropna later
+            # Create missing column as NaN to avoid KeyError;
+            # will be handled by imputer or dropna later
             df[col] = pd.NA
 
     # reorder
