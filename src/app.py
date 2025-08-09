@@ -7,7 +7,7 @@ import pandas as pd
 import sqlite3
 import datetime
 import os
-from src.helper import normalize_df, CANONICAL_COLUMNS
+from src.helper import normalize_df
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, recall_score, f1_score
@@ -123,7 +123,8 @@ def train_on_new_data(request: TrainRequest):
         new_df = normalize_df(new_df)
 
         # Combine and deduplicate
-        combined_df = pd.concat([existing_df, new_df], ignore_index=True).drop_duplicates()
+        combined_df = pd.concat([existing_df, new_df],
+                                ignore_index=True).drop_duplicates()
         combined_df.to_csv(DATA_PATH, index=False)
 
         # Handle missing values (if any)
@@ -140,7 +141,7 @@ def train_on_new_data(request: TrainRequest):
 
         # Prepare data
         X = combined_df[features]
-        y = combined_df['target'].cat.codes  # convert categorical to int for sklearn
+        y = combined_df['target'].cat.codes
 
         new_model = LogisticRegression(max_iter=20)
         new_model.fit(X, y)
@@ -154,10 +155,13 @@ def train_on_new_data(request: TrainRequest):
         mlflow.set_experiment("iris_training")
         with mlflow.start_run():
             mlflow.log_params(new_model.get_params())
-            mlflow.log_metrics({"accuracy": acc, "recall": recall, "f1_score": f1})
+            mlflow.log_metrics({"accuracy": acc, "recall": recall,
+                                "f1_score": f1})
             mlflow.sklearn.log_model(new_model, artifact_path="model")
-            mlflow.register_model(f"runs:/{mlflow.active_run().info.run_id}/model",
-                                   MODEL_NAME)
+            mlflow.register_model(
+                f"runs:/{mlflow.active_run().info.run_id}/model",
+                MODEL_NAME
+            )
 
         return {
             "message": "Model retrained and logged to MLflow",
