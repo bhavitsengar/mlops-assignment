@@ -13,7 +13,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, recall_score, f1_score
 from prometheus_client import Counter, Histogram
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
-from mlflow.tracking import MlflowClient
 
 
 # -------------------------------
@@ -65,14 +64,7 @@ mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 model = None
 if not SKIP_MODEL_LOAD:
     # Use MLflow client to fetch the latest model version
-    client = MlflowClient()
-    versions = client.search_model_versions(f"name='{MODEL_NAME}'")
-    if not versions:
-        raise RuntimeError(f"No versions found for model '{MODEL_NAME}'")
-
-    # pick the highest version number
-    latest_version = max(int(v.version) for v in versions)
-    model = mlflow.sklearn.load_model(f"models:/{MODEL_NAME}/{latest_version}")
+    model = mlflow.sklearn.load_model("models:/"+MODEL_NAME+"/None")
 else:
     # If skipping model load, use a dummy model for testing
     class DummyModel:
