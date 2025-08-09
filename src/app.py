@@ -23,6 +23,7 @@ MLFLOW_TRACKING_URI = "http://146.56.165.194:5000"
 MODEL_NAME = "Logistic Regression Model"
 DATA_PATH = "data/iris.csv"
 os.environ["MLFLOW_MODEL_STAGE"] = "Auto"
+SKIP_MODEL_LOAD = os.getenv("SKIP_MODEL_LOAD", "0") == "1"
 
 
 # Input validation schema using Pydantic
@@ -61,14 +62,17 @@ PREDICTION_TIME = Histogram("prediction_duration_seconds",
 # Connect to remote MLflow tracking server
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 # Load production model by name
-client = MlflowClient()
-versions = client.search_model_versions(f"name='{MODEL_NAME}'")
-if not versions:
-    raise RuntimeError(f"No versions found for model '{MODEL_NAME}'")
+model = None
+if not SKIP_MODEL_LOAD:
+    # Use MLflow client to fetch the latest model version
+    client = MlflowClient()
+    versions = client.search_model_versions(f"name='{MODEL_NAME}'")
+    if not versions:
+        raise RuntimeError(f"No versions found for model '{MODEL_NAME}'")
 
-# pick the highest version number
-latest_version = max(int(v.version) for v in versions)
-model = mlflow.sklearn.load_model(f"models:/{MODEL_NAME}/{latest_version}")
+    # pick the highest version number
+    latest_version = max(int(v.version) for v in versions)
+    model = mlflow.sklearn.load_model(f"models:/{MODEL_NAME}/{latest_version}")
 
 
 # --------------------------

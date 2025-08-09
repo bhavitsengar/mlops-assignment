@@ -1,7 +1,21 @@
 from fastapi.testclient import TestClient
 from src.app import app
+import os
+
+os.environ["SKIP_MODEL_LOAD"] = "1"
+
+
+class DummyModel:
+    def predict(self, X):
+        # return one label per row
+        return [1] * len(X)
+
+
+# Inject dummy
+app.model = DummyModel()
 
 client = TestClient(app)
+
 
 def test_predict_success():
     # Sample valid input
@@ -18,6 +32,7 @@ def test_predict_success():
     assert "prediction" in response.json()
     assert isinstance(response.json()["prediction"], int)
 
+
 def test_predict_missing_field():
     # Missing "petal_width"
     input_data = {
@@ -28,4 +43,5 @@ def test_predict_missing_field():
 
     response = client.post("/predict", json=input_data)
 
-    assert response.status_code == 422  # Unprocessable Entity (validation error)
+    # Unprocessable Entity (validation error)
+    assert response.status_code == 422
