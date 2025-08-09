@@ -1,0 +1,5 @@
+src/__pycache__/app.cpython-311.pyc
+logs.db
+__pycache__/conftest.cpython-311-pytest-8.4.1.pyc
+src/__pycache__/helper.cpython-311.pyc
+tests/__pycache__/test_app.cpython-311-pytest-8.4.1.pyc

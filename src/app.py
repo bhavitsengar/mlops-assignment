@@ -13,6 +13,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, recall_score, f1_score
 from prometheus_client import Counter, Histogram
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from mlflow.tracking import MlflowClient
 
 
 # -------------------------------
@@ -21,6 +22,7 @@ from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 MLFLOW_TRACKING_URI = "http://146.56.165.194:5000"
 MODEL_NAME = "Logistic Regression Model"
 DATA_PATH = "data/iris.csv"
+os.environ["MLFLOW_MODEL_STAGE"] = "Auto"
 
 
 # Input validation schema using Pydantic
@@ -59,7 +61,14 @@ PREDICTION_TIME = Histogram("prediction_duration_seconds",
 # Connect to remote MLflow tracking server
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 # Load production model by name
-model = mlflow.sklearn.load_model("models:/"+MODEL_NAME+"/None")
+client = MlflowClient()
+versions = client.search_model_versions(f"name='{MODEL_NAME}'")
+if not versions:
+    raise RuntimeError(f"No versions found for model '{MODEL_NAME}'")
+
+# pick the highest version number
+latest_version = max(int(v.version) for v in versions)
+model = mlflow.sklearn.load_model(f"models:/{MODEL_NAME}/{latest_version}")
 
 
 # --------------------------
