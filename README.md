@@ -193,5 +193,5 @@ docker run -d --name prometheus \
 - Query examples: `process_cpu_seconds_total`, custom counters/histograms your API exports, etc.
 ---
 
-Happy shipping! If you use different ports, hostnames, or endpoint names, update the examples above accordingly.
+If you use different ports, hostnames, or endpoint names, update the examples above accordingly.
 
