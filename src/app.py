@@ -9,7 +9,6 @@ import datetime
 import os
 from sklearn.base import clone
 from src.helper import normalize_df
-from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, recall_score, f1_score
 from prometheus_client import Counter, Histogram
