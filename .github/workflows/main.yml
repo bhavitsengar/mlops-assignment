@@ -78,6 +78,6 @@ jobs:
             docker rm iris-api || true
 
             # Run latest image
-            docker run -d -p 8000:8000 -e MLFLOW_TRACKING_URI=${{ secrets.MLFLOW_TRACKING_URI }} --name iris-api ${{ secrets.DOCKER_USERNAME }}/iris-api:latest
+            docker run -d -p 8000:8000 -p 8080:8080 -e MLFLOW_TRACKING_URI=${{ secrets.MLFLOW_TRACKING_URI }} -e LOG_DB=/app/logs.db --name iris-api ${{ secrets.DOCKER_USERNAME }}/iris-api:latest
           EOF
 

@@ -1,5 +1,17 @@
 FROM python:3.9
+
 WORKDIR /app
 COPY . .
-RUN pip install -r requirements.txt
-CMD ["uvicorn", "src.app:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Install app deps + sqlite-web
+RUN pip install -r requirements.txt && \
+    pip install sqlite-web
+
+# Add a small entrypoint that runs sqlite-web + uvicorn
+COPY docker/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Expose both ports
+EXPOSE 8000 8080
+
+CMD ["/app/entrypoint.sh"]
