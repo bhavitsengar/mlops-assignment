@@ -18,7 +18,9 @@ from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 # -------------------------------
 # CONFIG
 # -------------------------------
-MLFLOW_TRACKING_URI = "http://146.56.165.194:5000"
+MLFLOW_TRACKING_URI = os.getenv(
+    "MLFLOW_TRACKING_URI", "http://146.56.165.194:5000"
+)
 MODEL_NAME = "Iris Production Model"
 DATA_PATH = "data/iris.csv"
 os.environ["MLFLOW_MODEL_STAGE"] = "Auto"
