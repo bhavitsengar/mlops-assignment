@@ -7,6 +7,7 @@ import pandas as pd
 import sqlite3
 import datetime
 import os
+from sklearn.base import clone
 from src.helper import normalize_df
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
@@ -19,7 +20,7 @@ from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 # CONFIG
 # -------------------------------
 MLFLOW_TRACKING_URI = "http://146.56.165.194:5000"
-MODEL_NAME = "Logistic Regression Model"
+MODEL_NAME = "Iris Production Model"
 DATA_PATH = "data/iris.csv"
 os.environ["MLFLOW_MODEL_STAGE"] = "Auto"
 SKIP_MODEL_LOAD = os.getenv("SKIP_MODEL_LOAD", "0") == "1"
@@ -127,7 +128,7 @@ def train_on_new_data(request: TrainRequest):
     try:
         if not os.path.exists(DATA_PATH):
             raise FileNotFoundError(f"{DATA_PATH} not found")
-
+        global model
         # Load existing and new data
         existing_df = pd.read_csv(DATA_PATH)
         existing_df = normalize_df(existing_df)
@@ -155,7 +156,7 @@ def train_on_new_data(request: TrainRequest):
         X = combined_df[features]
         y = combined_df['target'].cat.codes
 
-        new_model = LogisticRegression(max_iter=20)
+        new_model = new_model = clone(model)
         new_model.fit(X, y)
 
         preds = new_model.predict(X)
@@ -164,18 +165,22 @@ def train_on_new_data(request: TrainRequest):
         f1 = f1_score(y, preds, average="macro")
 
         # Log to MLflow
-        mlflow.set_experiment("iris_training")
+        mlflow.set_experiment("iris_production_retraining")
         with mlflow.start_run():
             mlflow.log_params(new_model.get_params())
             mlflow.log_metrics({"accuracy": acc, "recall": recall,
                                 "f1_score": f1})
             mlflow.sklearn.log_model(new_model, artifact_path="model")
-            mlflow.sklearn.save_model(
-                model, "../models/LogisticRegression_model"
-            )
+
             mlflow.register_model(
                 f"runs:/{mlflow.active_run().info.run_id}/model",
                 MODEL_NAME
+            )
+
+        # Reload the model to ensure it's updated
+        if not SKIP_MODEL_LOAD:
+            model = mlflow.sklearn.load_model(
+                "models:/" + MODEL_NAME + "/None"
             )
 
         return {
