@@ -10,8 +10,8 @@ This project serves a simple **Iris prediction API** that loads its model from a
 - [1) Start the MLflow server](#1-start-the-mlflow-server)
 - [2) Open the MLflow UI & verify artifacts](#2-open-the-mlflow-ui--verify-artifacts)
 - [3) Start the Iris API container](#3-start-the-iris-api-container)
-- [4) API reference & examples](#5-api-reference--examples)
-- [5) Prometheus & monitoring](#6-prometheus--monitoring)
+- [4) API reference & examples](#4-api-reference--examples)
+- [5) Prometheus & monitoring](#5-prometheus--monitoring)
 
 ---
 
