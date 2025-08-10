@@ -7,6 +7,8 @@ import pandas as pd
 import sqlite3
 import datetime
 import os
+import logging
+import sys
 from sklearn.base import clone
 from src.helper import normalize_df
 from sklearn.preprocessing import StandardScaler
@@ -75,6 +77,21 @@ else:
 
     model = DummyModel()
 
+# Configure logger
+logger = logging.getLogger("iris_api")
+logger.setLevel(logging.INFO)
+
+# Log to stdout
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setLevel(logging.INFO)
+
+# Format: timestamp - level - message
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+console_handler.setFormatter(formatter)
+
+logger.addHandler(console_handler)
+logger.propagate = False  # Prevent duplicate logs
+
 
 # --------------------------
 # Prediction endpoint
@@ -109,6 +126,9 @@ def predict(data: IrisInput):
     log_entry = (str(datetime.datetime.now()), str(data.dict()), str(pred))
     c.execute("INSERT INTO logs VALUES (?, ?, ?)", log_entry)
     conn.commit()
+
+    # Log to stdout
+    logger.info(f"Prediction made | Input: {data.dict()} | Output: {pred}")
 
     return {"prediction": pred}
 
