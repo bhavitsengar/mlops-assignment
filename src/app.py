@@ -170,6 +170,9 @@ def train_on_new_data(request: TrainRequest):
             mlflow.log_metrics({"accuracy": acc, "recall": recall,
                                 "f1_score": f1})
             mlflow.sklearn.log_model(new_model, artifact_path="model")
+            mlflow.sklearn.save_model(
+                model, "../models/LogisticRegression_model"
+            )
             mlflow.register_model(
                 f"runs:/{mlflow.active_run().info.run_id}/model",
                 MODEL_NAME
