@@ -1,4 +1,4 @@
-# Iris API + MLflow (with Artifact Proxy)
+# MLOps Assignment 1 - Iris API + MLflow (with Artifact Proxy)
 
 This project serves a simple **Iris prediction API** that loads its model from an **MLflow Tracking Server** started with `--serve-artifacts` (so clients don’t need direct access to the artifact store). It also exposes **Prometheus** metrics.
 
